@@ -1,62 +1,68 @@
-# Astro Starter Kit: Blog
+# do_one_blog
 
-```sh
-npm create astro@latest -- --template blog
+Astro blog starter configured for Cloudflare Pages.
+
+## Requirements
+
+- Node.js 20+
+- npm 10+
+- Cloudflare account for deployment
+
+## Local development
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+App runs at `http://localhost:4321`.
 
-Features:
+## Build
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+```bash
+npm run build
+```
 
-## 🚀 Project Structure
+Build output is generated in `dist/`.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Write blog posts
+
+Add Markdown or MDX files in:
 
 ```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+src/content/blog/
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Deploy option A (recommended): GitHub + Cloudflare Pages dashboard
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+1. Push this repo to GitHub.
+2. In Cloudflare dashboard, create a Pages project and connect the repo.
+3. Set build command to `npm run build`.
+4. Set output directory to `dist`.
+5. Add environment variable `SITE_URL` (for example `https://your-domain.com`).
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+## Deploy option B: CLI with Wrangler
 
-Any static assets, like images, can be placed in the `public/` directory.
+Login and create the project once:
 
-## 🧞 Commands
+```bash
+npx wrangler login
+npx wrangler pages project create <project-name>
+```
 
-All commands are run from the root of the project, from a terminal:
+Then deploy:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+npm run build
+npm run deploy -- --project-name <project-name>
+```
 
-## 👀 Want to learn more?
+Deploy to production branch:
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```bash
+npm run deploy:prod -- --project-name <project-name>
+```
 
-## Credit
+## Domain setup
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+After attaching a custom domain in Cloudflare Pages, update `SITE_URL` to the same domain.
