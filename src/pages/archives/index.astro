@@ -1,0 +1,167 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// Group posts by Year, then by Month
+const groupedPosts = posts.reduce((acc, post) => {
+	const date = new Date(post.data.pubDate);
+	const year = date.getFullYear().toString();
+	const monthStr = date.toLocaleString('default', { month: 'long' });
+
+	if (!acc[year]) acc[year] = { posts: [], months: {} };
+	acc[year].posts.push(post); // Keep track of total posts in year
+	
+	if (!acc[year].months[monthStr]) acc[year].months[monthStr] = [];
+	acc[year].months[monthStr].push(post);
+
+	return acc;
+}, {} as Record<string, { posts: any[], months: Record<string, any[]> }>);
+
+const sortedYears = Object.keys(groupedPosts).sort((a, b) => Number(b) - Number(a));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Archives | ${SITE_TITLE}`} description="Blog post archives" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="breadcrumb">
+				<a href="/">Home</a> » Archives
+			</div>
+			
+			<div class="page-title-section">
+				<h1>Archives</h1>
+				<p><em>All the articles I've archived.</em></p>
+			</div>
+			
+			<hr />
+
+			<section class="archives-container">
+				{sortedYears.map(year => (
+					<div class="archive-year-group">
+						<h2 class="year-title">{year} <sup>{groupedPosts[year].posts.length}</sup></h2>
+						
+						{Object.keys(groupedPosts[year].months).map(month => (
+							<div class="archive-month-group">
+								<h3 class="month-title">{month} <sup>{groupedPosts[year].months[month].length}</sup></h3>
+								
+								<ul class="archive-post-list">
+									{groupedPosts[year].months[month].map(post => (
+										<li class="post-list-item">
+											<a href={`/blog/${post.id}/`} class="post-title">
+												{post.data.title}
+											</a>
+											<div class="post-date">
+												<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+													<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+													<line x1="16" y1="2" x2="16" y2="6"></line>
+													<line x1="8" y1="2" x2="8" y2="6"></line>
+													<line x1="3" y1="10" x2="21" y2="10"></line>
+												</svg>
+												<FormattedDate date={post.data.pubDate} />
+											</div>
+											<p>{post.data.description}</p>
+										</li>
+									))}
+								</ul>
+							</div>
+						))}
+					</div>
+				))}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.breadcrumb {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin-bottom: 0.5rem;
+	}
+	.breadcrumb a {
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+		color: var(--text-secondary);
+	}
+	.breadcrumb a:hover {
+		color: var(--accent-color);
+	}
+	.page-title-section {
+		margin-bottom: 2rem;
+	}
+	.page-title-section h1 {
+		margin-bottom: 0.5rem;
+	}
+	.page-title-section p {
+		color: var(--text-secondary);
+		margin: 0;
+	}
+	
+	.archives-container {
+		margin-top: 2rem;
+	}
+	.archive-year-group {
+		margin-bottom: 3rem;
+	}
+	.year-title {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-bottom: 1.5rem;
+		display: flex;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+	.year-title sup, .month-title sup {
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: var(--text-secondary);
+		margin-top: 0.25rem;
+	}
+	
+	.archive-month-group {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 2rem;
+	}
+	@media (min-width: 768px) {
+		.archive-month-group {
+			flex-direction: row;
+			gap: 2rem;
+		}
+	}
+	.month-title {
+		font-size: 1rem;
+		font-weight: 600;
+		min-width: 120px;
+		margin: 0 0 1rem 0;
+		display: flex;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+	.archive-post-list {
+		flex: 1;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.archive-post-list .post-list-item {
+		margin-bottom: 1.5rem;
+	}
+	.archive-post-list .post-list-item:last-child {
+		margin-bottom: 0;
+	}
+</style>

@@ -1,13 +1,92 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
 ---
 
-<Layout
-	title="About"
-	description="This is confront blog"
-	pubDate={new Date('February 24 2026')}
-	heroImage={AboutHeroImage}
->
-	<p>This is confront blog.</p>
-</Layout>
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`About | ${SITE_TITLE}`} description="About confront blog" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="breadcrumb">
+				<a href="/">Home</a> » About
+			</div>
+			
+			<div class="page-title-section">
+				<h1>About</h1>
+			</div>
+
+			<div class="prose content-section">
+				<p>
+					Hi, I'm <strong>Dowon</strong>. I plan to write about the challenges, problems, and interesting topics I face in my life on this blog.
+				</p>
+				<p>
+					I build and operate software systems, drive modern tech adoption, and design platforms. 
+					Previously, I worked on highly-available infrastructure and services.
+				</p>
+
+				<h2>What I Write About</h2>
+				<ul>
+					<li><strong>Software Engineering</strong> — AI, Architecture, System Design, Best Practices</li>
+					<li><strong>Infrastructure</strong> — Cloud, K8s, CI/CD, Deployment</li>
+				</ul>
+
+				<h2>Connect</h2>
+				<ul>
+					<li>GitHub: <a href="https://github.com/KimDowon0419" target="_blank">@KimDowon0419</a></li>
+					<li>Email: <a href="mailto:dowon0419@gmail.com">dowon0419@gmail.com</a></li>
+				</ul>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.breadcrumb {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin-bottom: 0.5rem;
+	}
+	.breadcrumb a {
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+		color: var(--text-secondary);
+	}
+	.breadcrumb a:hover {
+		color: var(--accent-color);
+	}
+	.page-title-section {
+		margin-bottom: 2rem;
+	}
+	.page-title-section h1 {
+		margin-bottom: 0.5rem;
+		font-size: 2.25rem;
+	}
+	
+	.content-section h2 {
+		margin-top: 3rem;
+		margin-bottom: 1rem;
+		font-size: 1.5rem;
+	}
+	.content-section ul {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+		margin-bottom: 2rem;
+	}
+	.content-section li {
+		margin-bottom: 0.75rem;
+		line-height: 1.6;
+	}
+	.content-section a {
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+	}
+</style>

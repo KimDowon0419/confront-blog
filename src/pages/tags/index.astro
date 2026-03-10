@@ -1,0 +1,97 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))].sort();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Tags Archive | ${SITE_TITLE}`} description="Archive of all blog tags" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="breadcrumb">
+				<a href="/">Home</a> » Tags
+			</div>
+			
+			<div class="page-title-section">
+				<h1>Tags Archive</h1>
+				<p><em>Browse articles by tag.</em></p>
+			</div>
+			
+			<hr />
+
+			<section class="tags-container">
+				{tags.length > 0 ? (
+					<ul class="tags-list">
+						{tags.map((tag) => (
+							<li>
+								<a href={`/tags/${tag}`} class="tag-link">
+									#{tag}
+								</a>
+							</li>
+						))}
+					</ul>
+				) : (
+					<p style="color: var(--text-secondary);">No tags found.</p>
+				)}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.breadcrumb {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin-bottom: 0.5rem;
+	}
+	.breadcrumb a {
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+		color: var(--text-secondary);
+	}
+	.breadcrumb a:hover {
+		color: var(--accent-color);
+	}
+	.page-title-section {
+		margin-bottom: 2rem;
+	}
+	.page-title-section h1 {
+		margin-bottom: 0.5rem;
+	}
+	.page-title-section p {
+		color: var(--text-secondary);
+		margin: 0;
+	}
+	.tags-list {
+		list-style: none;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 1.5rem;
+		row-gap: 1rem;
+	}
+	.tag-link {
+		display: inline-block;
+		color: var(--text-primary);
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+		font-weight: 500;
+		font-size: 1rem;
+		transition: color 0.2s ease;
+	}
+	.tag-link:hover {
+		color: var(--accent-color);
+	}
+</style>
